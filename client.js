@@ -214,7 +214,7 @@ window.__ModuleLoader__.load({
       if (phase.bytes) counters.push(t('progress.size', { value: fmtBytes(phase.bytes) }))
       let detail = ''
       if (job.state === 'error') detail = job.error ?? t('progress.failed')
-      else if (running) detail = phase.group || phase.item ? [phase.group, phase.item].filter(Boolean).join(' · ') : phase.line || t('progress.waiting')
+      else if (running) detail = phase.group || phase.item ? [zhCli(phase.group), zhCli(phase.item)].filter(Boolean).join(' · ') : zhCli(phase.line) || t('progress.waiting')
       else detail = t('progress.done')
       const hasLog = Array.isArray(job.lines) && job.lines.length > 0
       return h(
@@ -225,12 +225,12 @@ window.__ModuleLoader__.load({
           { className: `mole-runbar mole-runbar-${job.state}` },
           h('span', { className: 'mole-runbar-indicator', 'aria-hidden': true }),
           h('span', { className: 'mole-runbar-label' }, job.label ?? t('progress.running')),
-          h('span', { className: 'mole-runbar-detail', title: phase.line ?? '' }, detail),
+          h('span', { className: 'mole-runbar-detail', title: zhCli(phase.line ?? '') }, detail),
           counters.length > 0 ? h('span', { className: 'mole-runbar-counters' }, counters.join(' · ')) : null,
           h('span', { className: 'mole-runbar-time' }, t('progress.elapsed', { value: elapsed })),
           running && hasLog ? h('button', { type: 'button', className: 'mole-runbar-toggle', onClick: () => setExpanded((value) => !value) }, expanded ? t('progress.hideLog') : t('progress.showLog')) : null,
         ),
-        expanded && hasLog ? h('pre', { className: 'mole-runbar-log' }, job.lines.slice(-60).join('\n')) : null,
+        expanded && hasLog ? h('pre', { className: 'mole-runbar-log' }, job.lines.slice(-60).map(zhCliLine).join('\n')) : null,
       )
     }
 
@@ -287,6 +287,323 @@ window.__ModuleLoader__.load({
     }
 
     // ------------------------------------------------------------------
+    // Mole CLI output localization (the CLI itself prints English only)
+    // ------------------------------------------------------------------
+    let activeLocale = 'en'
+
+    function isZhLocale() {
+      return /^zh/i.test(String(activeLocale))
+    }
+
+    const CLI_ZH = {
+  "User essentials": "用户基础项",
+  "App caches": "应用缓存",
+  "Browsers": "浏览器",
+  "Cloud & Office": "云与办公",
+  "Developer tools": "开发工具",
+  "Apps & utilities": "应用与工具",
+  "Virtualization": "虚拟化",
+  "Application Support": "应用支持",
+  "App leftovers": "应用残留",
+  "Apple Silicon updates": "Apple Silicon 更新",
+  "Device backups & firmware": "设备备份与固件",
+  "Time Machine": "Time Machine",
+  "Large files": "大文件",
+  "Project artifacts": "项目构建产物",
+  "System data": "系统数据",
+  "System caches": "系统缓存",
+  "External volume": "外部磁盘",
+  "System cleanup requires admin access": "系统清理需要管理员权限",
+  "Trash": "废纸篓",
+  "User app cache": "用户应用缓存",
+  "User app logs": "用户应用日志",
+  "npm cache": "npm 缓存",
+  "npm logs": "npm 日志",
+  "pnpm cache": "pnpm 缓存",
+  "Corepack cache": "Corepack 缓存",
+  "pip cache": "pip 缓存",
+  "uv cache": "uv 缓存",
+  "Docker unused data": "Docker 未使用数据",
+  "Project caches": "项目缓存",
+  "Xcode XCTestDevices": "Xcode 测试设备",
+  "Stale login item": "过期的登录项",
+  "Time Machine local snapshots": "Time Machine 本地快照",
+  "Docker Desktop data": "Docker Desktop 数据",
+  "Build artifacts": "构建产物",
+  "Cleanup complete": "清理完成",
+  "Cleanup incomplete": "清理未完成",
+  "Cleanup interrupted": "清理被中断",
+  "Cleanup cancelled": "清理已取消",
+  "Dry run complete - no changes made": "预览完成 — 未做任何更改",
+  "Dry run incomplete": "预览未完成",
+  "Dry run interrupted": "预览被中断",
+  "Dry run cancelled": "预览已取消",
+  "No additional reclaimable space detected.": "未检测到更多可回收空间。",
+  "No additional space freed.": "没有额外释放空间。",
+  "No significant reclaimable space detected, system already clean.": "未检测到明显可回收空间，系统已是干净状态。",
+  "System was already clean; no additional space freed.": "系统本来就很干净，没有额外释放空间。",
+  "Partially measured": "部分测量",
+  "Unknown": "未知",
+  "SKIPPED": "已跳过",
+  "SPACE": "空间",
+  "Files to be removed": "将要删除的文件",
+  "Item count": "项目数量",
+  "Free space": "可用空间",
+  "Potential space": "预计可释放",
+  "Cleaning...": "正在清理…",
+  "Preparing summary...": "正在生成摘要…",
+  "Running in non-interactive mode": "以非交互模式运行",
+  "Optimize": "优化",
+  "Performance diagnosis": "性能诊断",
+  "Optimization Complete": "优化完成",
+  "Optimization pass complete": "优化过程完成",
+  "Review the warnings above": "请查看上方警告",
+  "System optimization requires admin access": "系统优化需要管理员权限",
+  "Optimize task outcomes are incomplete": "优化结果不完整",
+  "Finder Cache Refresh": "Finder 缓存刷新",
+  "App State Cleanup": "应用状态清理",
+  "Broken Config Repair": "损坏配置修复",
+  "Network Cache Refresh": "网络缓存刷新",
+  "Database Optimization": "数据库优化",
+  "Prevent Finder .DS_Store": "阻止 Finder 生成 .DS_Store",
+  "Legacy Overrides": "旧版兼容覆盖",
+  "Network Stack Refresh": "网络栈刷新",
+  "Permission Repair": "权限修复",
+  "Spotlight Optimization": "Spotlight 优化",
+  "Spotlight Orphan Rules": "Spotlight 孤立规则",
+  "Periodic Maintenance": "定期维护",
+  "Shared File Lists": "共享文件列表",
+  "Disk Health": "磁盘健康",
+  "Login Items": "登录项",
+  "Quarantine Database Cleanup": "隔离区数据库清理",
+  "Launch Agents Cleanup": "启动代理清理",
+  "Notifications": "通知",
+  "Usage Data": "使用数据",
+  "Additional sustained pressure:": "其他持续占用：",
+  "Gatekeeper status: assessments enabled": "Gatekeeper 状态：评估已启用",
+  "Mounted image adds assessment overhead:": "挂载的镜像增加评估开销：",
+  "Review these mounted images and detach any you no longer need": "请检查这些已挂载镜像，不需要的请推出",
+  "Gatekeeper and code-signature assessment activity is elevated.": "Gatekeeper 与代码签名评估活动偏高。",
+  "QuickLook thumbnails refreshed": "QuickLook 缩略图已刷新",
+  "Icon services cache rebuilt": "图标服务缓存已重建",
+  "App saved states optimized": "应用保存状态已优化",
+  "All preference files valid": "所有偏好设置文件均有效",
+  "Network cache refresh skipped (admin access required)": "网络缓存刷新已跳过（需要管理员权限）",
+  "Skipping sudo-required optimizations: admin access not granted": "已跳过需要 sudo 的优化：未获得管理员授权",
+  "Optimized 1 databases for Mail, Safari, Messages": "已优化 1 个数据库（邮件、Safari、信息）",
+  "Skipped 1 databases over the 100 MB safety limit": "已跳过 1 个超过 100 MB 安全上限的数据库",
+  ".DS_Store prevention enabled on network & USB volumes": "已在网络与 USB 卷上启用 .DS_Store 防护",
+  "No legacy App Nap or disk-image overrides found": "未发现旧版 App Nap 或磁盘映像覆盖设置",
+  "Network stack refresh skipped, active VPN detected": "网络栈刷新已跳过：检测到 VPN 正在使用",
+  "User directory permissions already optimal": "用户目录权限已是最佳状态",
+  "Spotlight index verified": "Spotlight 索引已验证",
+  "Spotlight search rules already clean": "Spotlight 搜索规则已是干净状态",
+  "Periodic maintenance skipped (not available on this macOS version)": "定期维护已跳过（当前 macOS 版本不支持）",
+  "Shared file lists all healthy": "共享文件列表全部正常",
+  "Disk verify skipped": "磁盘校验已跳过",
+  "Login items all healthy (2 checked)": "登录项全部正常（已检查 2 项）",
+  "Quarantine database already clean": "隔离区数据库已是干净状态",
+  "Notification Center database is healthy (623KB)": "通知中心数据库正常（623KB）",
+  "Knowledge database is healthy (11.7MB)": "知识数据库正常（11.7MB）",
+  "Installer scan timed out; no files selected": "安装包扫描超时，未选择文件",
+  "Check that the scan locations are readable and responsive, then retry mo installer.": "请确认扫描目录可读且响应正常，然后重试 mo installer。",
+  "No installer files to clean": "没有可清理的安装包文件",
+  "Installers cleaned": "安装包已清理",
+  "No installers were removed": "未删除任何安装包",
+  "Installer cleanup incomplete": "安装包清理未完成",
+  "No apps with Intel code to remove": "没有可移除 Intel 代码的应用",
+  "Run mo slim in a terminal to choose apps.": "请在终端中运行 mo slim 选择应用。",
+  "Purge complete": "项目清理完成",
+  "Purge Project Artifacts": "清理项目构建产物",
+  "clean": "清理",
+  "optimize": "优化",
+  "purge": "项目清理",
+  "installer": "安装包清理",
+  "slim": "Intel 代码移除",
+  "uninstall": "卸载",
+  "analyze": "磁盘分析",
+  "status": "状态",
+  "clean-dry-run": "清理预览",
+  "optimize-dry-run": "优化预览",
+  "purge-dry-run": "项目清理预览",
+  "installer-dry-run": "安装包预览",
+  "slim-dry-run": "Intel 代码预览",
+  "Clean Your Mac": "清理你的 Mac",
+  "Nothing to clean": "无需清理",
+  "Dry Run Mode, Preview only, no deletions": "预览模式：仅展示，不会删除任何文件",
+  "DRY RUN MODE, No files will be modified": "预览模式：不会修改任何文件",
+  "System": "系统",
+  "uninstall-dry-run": "卸载预览"
+}
+
+    const CLI_PATTERNS = [
+      [/would empty, (\d+) items?/g, '将清空，$1 项'],
+      [/\[DRY RUN\]/g, '[预览]'],
+      [/^Dry Run Mode, Preview only, no deletions$/, '预览模式：仅展示，不会删除任何文件'],
+      [/^DRY RUN MODE, No files will be modified$/, '预览模式：不会修改任何文件'],
+      [/^DRY RUN MODE, No project artifacts will be removed$/, '预览模式：不会删除任何项目构建产物'],
+      [/^DRY RUN MODE, No installer files will be removed$/, '预览模式：不会删除任何安装包文件'],
+      [/^Dry run incomplete - no changes made$/, '预览未完成 — 未做任何更改'],
+      [/^Would free approximately: (.+) \| Items: (\d+) \| Free: (.+)$/, '预计可释放约：$1 | 项目：$2 | 可用：$3'],
+      [/^Some artifacts were skipped or could not be processed\.$/, '部分构建产物被跳过或无法处理。'],
+      [/^Could not inspect (.+); kept$/, '无法检查 $1；已保留'],
+      [/^System\s+(\d+)\/(\d+) GB RAM \| (\d+)\/(\d+) GB Disk \| Uptime (.*)$/, '系统 $1/$2 GB 内存 · $3/$4 GB 磁盘 · 已运行 $5'],
+      [/^([^·]+) · would empty, (\d+) items?$/, '$1 · 将清空，$2 项'],
+      [/^([^·]+) would clean$/, '$1 将清理'],
+      [/\bwould clean\b/g, '将清理'],
+      [/\bwould empty\b/g, '将清空'],
+      [/(?<!-)\bdry\b/g, '（预览）'],
+      [/\b(\d+) items?\b/g, '$1 项'],
+      [/\b(\d+) dirs?\b/g, '$1 个目录'],
+      [/\b(\d+) files?\b/g, '$1 个文件'],
+      [/Skipping incomplete download \(open-file check unavailable\):\s*/g, '跳过未完成下载（无法检查文件占用）：'],
+      [/\bskipped 1 slow\/incomplete root scan\b/g, '已跳过 1 个缓慢或不完整的根目录扫描'],
+      [/\bskipped \(process state unknown\)/g, '已跳过（进程状态未知）'],
+      [/\bMissing app\/helper target:\s*/g, '缺少应用或后台目标：'],
+      [/\breview before removing\b/g, '删除前请检查'],
+      [/\bmacOS removes them when space runs low\b/g, '空间不足时 macOS 会自动移除'],
+      [/\breview with (.+)$/g, '请用 $1 查看'],
+      [/^Optimized (\d+) databases? for (.+)$/, '已优化 $1 个数据库（$2）'],
+      [/^Skipped (\d+) databases? over the (.+) safety limit$/, '已跳过 $1 个超过 $2 安全上限的数据库'],
+      [/^(\d+) apps, (.+) of Intel code$/, '$1 个应用，$2 Intel 代码'],
+      [/^Installer scan (timed out|failed); no files selected(?: \((.+)\))?$/, '安装包扫描超时或失败，未选择文件$2'],
+      [/^Check that the scan locations are readable and responsive, then retry mo installer\.$/, '请确认扫描目录可读且响应正常，然后重试 mo installer。'],
+      [/^Potential space: (.+) · (.+) items$/, '预计可释放：$1 · $2 项'],
+      [/^Potential space: (.+)$/, '预计可释放：$1'],
+      [/^Detailed file list: (.+)$/, '详细文件列表：$1'],
+      [/^Free space: (.+)$/, '可用空间：$1'],
+      [/^Removed: (.+)$/, '已删除：$1'],
+      [/^Applied (\d+) optimizations?, (\d+) databases? optimized$/, '已应用 $1 项优化，优化 $2 个数据库'],
+      [/^Applied (\d+) optimizations?$/, '已应用 $1 项优化'],
+      [/^(\d+) unchanged \| (\d+) skipped \| (\d+) unavailable \| (\d+) need attention$/, '$1 项无变化 | 已跳过 $2 项 | $3 项不可用 | $4 项需关注'],
+      [/^Likely bottleneck: (.+)$/, '可能瓶颈：$1'],
+      [/^Memory pressure: swap (.+) of (.+) used \((.+)\), (.+) free$/, '内存压力：交换区已用 $1 / $2（$3），空闲 $4'],
+      [/^Additional sustained pressure:$/, '其他持续占用：'],
+      [/^Gatekeeper status: (.+)$/, 'Gatekeeper 状态：$1'],
+      [/^Mounted image adds assessment overhead:$/, '挂载的镜像增加评估开销：'],
+      [/^Review these mounted images and detach any you no longer need$/, '请检查这些已挂载镜像，不需要的请推出'],
+      [/^Gatekeeper and code-signature assessment activity is elevated\.$/, 'Gatekeeper 与代码签名评估活动偏高。'],
+      [/^System (\d+)\/(\d+) GB RAM \| (\d+)\/(\d+) GB Disk \| Uptime (.*)$/, '系统 $1/$2 GB 内存 · $3/$4 GB 磁盘 · 已运行 $5'],
+      [/^Apple Silicon \| Free space: (.+)$/, 'Apple Silicon · 可用空间 $1'],
+      [/^Whitelist: (\d+) core patterns active$/, '保护清单：$1 条核心规则已启用'],
+      [/^System caches need sudo, run (.+) for full preview$/, '系统缓存需要管理员权限，运行 $1 可查看完整预览'],
+      [/\s+（预览）/g, '（预览）'],
+      [/(\d+\+?)\s*dirs?\b/g, '$1 个目录'],
+      [/(\d+\+?)\s*files?\b/g, '$1 个文件'],
+      [/~([\d.]+)% CPU sustained/g, '持续约 $1% CPU'],
+      [/^Launch Agent (.+): program missing at (.+)$/, '启动代理 $1：程序缺失（$2）'],
+      [/^(\d+) Launch Agent\(s\) point at a missing program$/, '$1 个启动代理指向缺失的程序'],
+      [/^left in (.+)$/, '保留在 $1'],
+      [/^(\d+) Launch Agent\(s\) point at a missing program · left in (.+)$/, '$1 个启动代理指向缺失的程序 · 保留在 $2'],
+    ]
+
+    const CLI_GENERIC_PATTERNS = [
+      [/^(.+) refreshed$/, '$1 已刷新'],
+      [/^(.+) rebuilt$/, '$1 已重建'],
+      [/^(.+) optimized$/, '$1 已优化'],
+      [/^(.+) skipped, active VPN detected$/, '$1 已跳过：检测到 VPN 正在使用'],
+      [/^(.+) skipped \(admin access required\)$/, '$1 已跳过（需要管理员权限）'],
+      [/^(.+) skipped \(not available on this macOS version\)$/, '$1 已跳过（当前 macOS 版本不支持）'],
+      [/^(.+) verified$/, '$1 已验证'],
+      [/^(.+) already clean$/, '$1 已是干净状态'],
+      [/^(.+) already optimal$/, '$1 已是最佳状态'],
+      [/^(.+) all healthy( \(.*\))?$/, '$1 全部正常$2'],
+      [/^(.+) is healthy \((.+)\)$/, '$1 正常（$2）'],
+      [/^No (.+) found$/, '未发现 $1'],
+    ]
+
+    const CLI_WORDS = [
+      [/\bpreview attachment\b/gi, '预览附件'],
+      [/\bstickers?\b/gi, '贴纸'],
+      [/\bsuggestions?\b/gi, '建议'],
+      [/\bsnapshots?\b/gi, '快照'],
+      [/\bbackups?\b/gi, '备份'],
+      [/\bfirmware\b/gi, '固件'],
+      [/\binstallers?\b/gi, '安装包'],
+      [/\barchives?\b/gi, '归档'],
+      [/\bsimulators?\b/gi, '模拟器'],
+      [/\bleftovers?\b/gi, '残留'],
+      [/\bunused data\b/gi, '未使用数据'],
+      [/\bbytecode\b/gi, '字节码'],
+      [/\bdebug symbols?\b/gi, '调试符号'],
+      [/\btemp files?\b/gi, '临时文件'],
+      [/\btemporary\b/gi, '临时'],
+      [/\bcaches?\b/gi, '缓存'],
+      [/\blogs?\b/gi, '日志'],
+      [/\bdata\b/gi, '数据'],
+      [/\bfiles?\b/gi, '文件'],
+      [/\bdirs?\b/gi, '目录'],
+      [/\bsystem\b/gi, '系统'],
+      [/\buser\b/gi, '用户'],
+      [/\bapps?\b/gi, '应用'],
+      [/\bhistory\b/gi, '历史'],
+      [/\btrash\b/gi, '废纸篓'],
+      [/\bmessages\b/gi, '信息'],
+      [/\bmail\b/gi, '邮件'],
+    ]
+
+    function translateCliWords(value) {
+      let out = value
+      for (const [pattern, replacement] of CLI_WORDS) out = out.replace(pattern, replacement)
+      return out
+    }
+
+    function translateCli(text) {
+      const value = String(text ?? '')
+      if (!value) return value
+      const exact = CLI_ZH[value]
+      if (exact !== undefined) return exact
+      let out = value
+      for (const [pattern, replacement] of CLI_PATTERNS) out = out.replace(pattern, replacement)
+      if (out === value) {
+        for (const [pattern, replacement] of CLI_GENERIC_PATTERNS) out = out.replace(pattern, replacement)
+      }
+      if (out === value && !value.includes('/') && value.length < 120) out = translateCliWords(value)
+      out = out.replace(/\s+（预览）/g, '（预览）')
+      return out
+    }
+
+    function translateCliLine(line) {
+      const text = String(line ?? '')
+      const match = /^(\s*(?:[➤>⚙•]\s*|[○✓◎⊙]\s*))(.*)$/.exec(text)
+      const marker = match ? match[1] : ''
+      const content = match ? match[2] : text
+      const localized = content.split(' · ').map((part) => translateCli(part)).join(' · ')
+      return marker + localized
+    }
+
+    function zhCli(text) {
+      const value = String(text ?? '')
+      return isZhLocale() ? translateCli(value) : value
+    }
+
+    function zhCliLine(line) {
+      return isZhLocale() ? translateCliLine(line) : String(line ?? '')
+    }
+
+    const HEALTH_ZH = { Excellent: '优秀', Good: '良好', Fair: '一般', Poor: '较差', Critical: '严重', Warning: '警告', 'All checks passed': '所有检查通过' }
+    const BATTERY_STATUS_ZH = { AC: '电源', Charging: '充电中', Discharging: '使用电池', Full: '已充满', Unknown: '未知' }
+    const BATTERY_HEALTH_ZH = { Good: '良好', Normal: '正常', 'Service Battery': '建议维修', 'Replace Soon': '建议更换', Unknown: '未知' }
+    const SMART_ZH = { verified: '已验证', unverified: '未验证', unknown: '未知' }
+    const PRESSURE_ZH = { normal: '正常', warn: '偏高', critical: '紧张' }
+
+    function zhMapValue(map, value) {
+      const key = String(value ?? '')
+      if (!isZhLocale()) return key
+      return map[key] ?? key
+    }
+
+    function zhDuration(value) {
+      const text = String(value ?? '')
+      if (!isZhLocale()) return text
+      return text
+        .replace(/(\d+)d\b/g, '$1 天')
+        .replace(/(\d+)h\b/g, '$1 小时')
+        .replace(/(\d+)m\b/g, '$1 分钟')
+        .replace(/(\d+)s\b/g, '$1 秒')
+    }
+
+    // ------------------------------------------------------------------
     // dry-run parser
     // ------------------------------------------------------------------
     const SIZE_UNITS = { B: 1, KB: 1024, MB: 1024 ** 2, GB: 1024 ** 3, TB: 1024 ** 4 }
@@ -306,7 +623,7 @@ window.__ModuleLoader__.load({
         const trimmed = line.trim()
         if (!trimmed) continue
         if (/^[➤>]/.test(trimmed)) {
-          current = { title: trimmed.replace(/^[➤>]\s*/, ''), items: [], note: '' }
+          current = { title: zhCli(trimmed.replace(/^[➤>]\s*/, '')), items: [], note: '' }
           groups.push(current)
           continue
         }
@@ -314,7 +631,7 @@ window.__ModuleLoader__.load({
         if (mark && current) {
           if (mark[1] === '↳') {
             const last = current.items[current.items.length - 1]
-            if (last) last.note = mark[2].trim()
+            if (last) last.note = zhCli(mark[2].trim())
             continue
           }
           const rest = mark[2]
@@ -323,8 +640,8 @@ window.__ModuleLoader__.load({
           const parts = rest.split(' · ')
           const item = {
             mark: mark[1],
-            name: (parts[0] ?? '').trim(),
-            detail: parts.slice(1).join(' · ').trim(),
+            name: zhCli((parts[0] ?? '').trim()),
+            detail: zhCli(parts.slice(1).join(' · ').trim()),
             sizeBytes,
             sizeText: sizeMatch ? `${sizeMatch[1]} ${sizeMatch[2]}` : '',
             note: '',
@@ -338,24 +655,24 @@ window.__ModuleLoader__.load({
         }
         if (/^⚙/.test(trimmed)) {
           const value = trimmed.replace(/^⚙\s*/, '')
-          systemLine = systemLine ? `${systemLine} · ${value}` : value
+          systemLine = systemLine ? `${systemLine} · ${zhCli(value)}` : zhCli(value)
           continue
         }
         if (groups.length === 0) {
           if (!title && /^[A-Za-z]/u.test(trimmed) && trimmed.length < 40 && !/[=]/.test(trimmed)) {
-            title = trimmed
+            title = zhCli(trimmed)
           } else {
-            notes.push(trimmed)
+            notes.push(zhCli(trimmed))
           }
           continue
         }
         if (current && current.items.length === 0 && !current.note) {
-          current.note = trimmed
+          current.note = zhCli(trimmed)
         } else {
-          notes.push(trimmed)
+          notes.push(zhCli(trimmed))
         }
       }
-      return { title, groups, notes, systemLine, totalBytes, itemCount, itemLines, raw: text }
+      return { title, groups, notes, systemLine: zhDuration(systemLine), totalBytes, itemCount, itemLines, raw: text }
     }
 
     function summarizeRun(text) {
@@ -371,8 +688,8 @@ window.__ModuleLoader__.load({
           continue
         }
       }
-      if (keep.length === 0) return lines.slice(-6)
-      return keep.slice(-10)
+      if (keep.length === 0) return lines.slice(-6).map(zhCli)
+      return keep.slice(-10).map(zhCli)
     }
 
     // ------------------------------------------------------------------
@@ -629,10 +946,10 @@ window.__ModuleLoader__.load({
         h(
           'div',
           { className: 'mole-output-head' },
-          h('span', null, `输出 / output · ${body.length} lines`),
+          h('span', null, isZhLocale() ? `输出 · 共 ${body.length} 行` : `输出 / output · ${body.length} lines`),
           h('button', { type: 'button', className: 'mole-link-btn', onClick: () => setOpen((value) => !value) }, open ? '收起' : '展开'),
         ),
-        open ? h('pre', { className: 'mole-pre' }, body.join('\n')) : null,
+        open ? h('pre', { className: 'mole-pre' }, body.map(zhCliLine).join('\n')) : null,
       )
     }
 
@@ -719,9 +1036,9 @@ window.__ModuleLoader__.load({
                 'div',
                 null,
                 h('div', { className: 'mole-eyebrow' }, h(Icon, { name: 'health', size: 14 }), t('status.health')),
-                h('div', { className: 'mole-health-score' }, h('span', { className: `mole-tone-text-${healthTone}` }, Number.isFinite(health) ? health : '—'), h('span', { className: 'mole-health-score-sub' }, status.health_score_msg ?? '')),
+                h('div', { className: 'mole-health-score' }, h('span', { className: `mole-tone-text-${healthTone}` }, Number.isFinite(health) ? health : '—'), h('span', { className: 'mole-health-score-sub' }, zhMapValue(HEALTH_ZH, status.health_score_msg ?? ''))),
                 h('p', { className: 'mole-health-note' }, status.health_score_msg ? t('status.health.note') : ''),
-                h('div', { className: 'mole-health-foot' }, h('span', null, t('status.uptime', { value: status.uptime ?? fmtDuration(status.uptime_seconds) })), h('span', null, t('status.procs', { value: status.procs ?? '—' }))),
+                h('div', { className: 'mole-health-foot' }, h('span', null, t('status.uptime', { value: zhDuration(status.uptime ?? fmtDuration(status.uptime_seconds)) })), h('span', null, t('status.procs', { value: status.procs ?? '—' }))),
               ),
               h(Planet, { variant: 'sun', size: 150 }),
             ),
@@ -732,23 +1049,23 @@ window.__ModuleLoader__.load({
             h('div', { className: 'mole-metric-head' }, h('span', { className: 'mole-eyebrow' }, h(Icon, { name: 'cpu', size: 14 }), 'CPU'), h('span', { className: 'mole-chip' }, t('status.cores', { value: cpu.logical_cpu ?? cpu.core_count ?? '—' }))),
             h('div', { className: 'mole-metric-value' }, fmtPercent(cpu.usage, 1)),
             h('div', { className: 'mole-core-bars' }, useStable(cpu.per_core).map((value, index) => h('span', { key: index, className: 'mole-core-bar', style: { height: `${Math.max(8, Math.min(100, Number(value) || 0))}%` } }))),
-            h('div', { className: 'mole-metric-foot' }, h('span', null, `load ${[cpu.load1, cpu.load5, cpu.load15].map((value) => (Number.isFinite(Number(value)) ? Number(value).toFixed(2) : '—')).join(' / ')}`)),
+            h('div', { className: 'mole-metric-foot' }, h('span', null, `${t('status.load')} ${[cpu.load1, cpu.load5, cpu.load15].map((value) => (Number.isFinite(Number(value)) ? Number(value).toFixed(2) : '—')).join(' / ')}`)),
           ),
           h(
             Card,
             { className: 'mole-card-metric' },
-            h('div', { className: 'mole-metric-head' }, h('span', { className: 'mole-eyebrow' }, h(Icon, { name: 'memory', size: 14 }), t('status.memory')), h('span', { className: 'mole-chip' }, memory.pressure ? `pressure ${memory.pressure}` : '')),
+            h('div', { className: 'mole-metric-head' }, h('span', { className: 'mole-eyebrow' }, h(Icon, { name: 'memory', size: 14 }), t('status.memory')), h('span', { className: 'mole-chip' }, memory.pressure ? `${t('status.pressure')} ${zhMapValue(PRESSURE_ZH, memory.pressure)}` : '')),
             h('div', { className: 'mole-metric-value' }, fmtPercent(memory.used_percent, 1)),
             h(Bar, { value: memory.used_percent, tone: Number(memory.used_percent) > 85 ? 'bad' : Number(memory.used_percent) > 70 ? 'warn' : 'accent' }),
-            h('div', { className: 'mole-metric-foot' }, h('span', null, `${fmtBytes(memory.used)} / ${fmtBytes(memory.total)}`), h('span', null, `swap ${fmtBytes(memory.swap_used)}`)),
+            h('div', { className: 'mole-metric-foot' }, h('span', null, `${fmtBytes(memory.used)} / ${fmtBytes(memory.total)}`), h('span', null, `${t('status.swap')} ${fmtBytes(memory.swap_used)}`)),
           ),
           h(
             Card,
             { className: 'mole-card-metric' },
-            h('div', { className: 'mole-metric-head' }, h('span', { className: 'mole-eyebrow' }, h(Icon, { name: 'disk', size: 14 }), t('status.disk')), h('span', { className: 'mole-chip' }, disk.smart_status ?? '')),
+            h('div', { className: 'mole-metric-head' }, h('span', { className: 'mole-eyebrow' }, h(Icon, { name: 'disk', size: 14 }), t('status.disk')), h('span', { className: 'mole-chip' }, zhMapValue(SMART_ZH, disk.smart_status ?? ''))),
             h('div', { className: 'mole-metric-value' }, fmtBytes(disk.used)),
             h(Bar, { value: diskPercent, tone: diskPercent > 88 ? 'bad' : diskPercent > 75 ? 'warn' : 'accent' }),
-            h('div', { className: 'mole-metric-foot' }, h('span', null, t('status.disk.free', { value: fmtBytes((disk.total ?? 0) - (disk.used ?? 0)) })), h('span', null, `R ${Number(io.read_rate ?? 0).toFixed(1)} · W ${Number(io.write_rate ?? 0).toFixed(1)} MB/s`)),
+            h('div', { className: 'mole-metric-foot' }, h('span', null, t('status.disk.free', { value: fmtBytes((disk.total ?? 0) - (disk.used ?? 0)) })), h('span', null, t('status.diskio', { read: Number(io.read_rate ?? 0).toFixed(1), write: Number(io.write_rate ?? 0).toFixed(1) }))),
           ),
           h(
             Card,
@@ -767,18 +1084,18 @@ window.__ModuleLoader__.load({
             ? h(
                 Card,
                 { className: 'mole-card-metric' },
-                h('div', { className: 'mole-metric-head' }, h('span', { className: 'mole-eyebrow' }, h(Icon, { name: 'battery', size: 14 }), t('status.battery')), h('span', { className: 'mole-chip' }, battery.health ?? '')),
+                h('div', { className: 'mole-metric-head' }, h('span', { className: 'mole-eyebrow' }, h(Icon, { name: 'battery', size: 14 }), t('status.battery')), h('span', { className: 'mole-chip' }, zhMapValue(BATTERY_HEALTH_ZH, battery.health ?? ''))),
                 h('div', { className: 'mole-metric-value' }, fmtPercent(battery.percent)),
                 h(Bar, { value: battery.percent, tone: Number(battery.percent) > 30 ? 'ok' : 'warn' }),
-                h('div', { className: 'mole-metric-foot' }, h('span', null, battery.status ?? ''), h('span', null, t('status.battery.cycles', { value: battery.cycle_count ?? '—' }))),
+                h('div', { className: 'mole-metric-foot' }, h('span', null, zhMapValue(BATTERY_STATUS_ZH, battery.status ?? '')), h('span', null, t('status.battery.cycles', { value: battery.cycle_count ?? '—' }))),
               )
             : null,
           h(
             Card,
             { className: 'mole-card-metric' },
-            h('div', { className: 'mole-metric-head' }, h('span', { className: 'mole-eyebrow' }, h(Icon, { name: 'thermal', size: 14 }), t('status.thermal')), h('span', { className: 'mole-chip' }, thermal.fan_count ? `fan ${thermal.fan_count}` : t('status.thermal.fanless') ?? '')),
+            h('div', { className: 'mole-metric-head' }, h('span', { className: 'mole-eyebrow' }, h(Icon, { name: 'thermal', size: 14 }), t('status.thermal')), h('span', { className: 'mole-chip' }, thermal.fan_count ? t('status.fan.count', { value: thermal.fan_count }) : t('status.thermal.fanless') ?? '')),
             h('div', { className: 'mole-metric-value' }, `${Number(thermal.cpu_temp ?? 0).toFixed(0)}°C`),
-            h('div', { className: 'mole-metric-foot' }, h('span', null, `battery ${Number(thermal.battery_temp ?? 0).toFixed(0)}°C`), h('span', null, `fan ${Number(thermal.fan_speed ?? 0).toFixed(0)} rpm`)),
+            h('div', { className: 'mole-metric-foot' }, h('span', null, t('status.battery.temp', { value: Number(thermal.battery_temp ?? 0).toFixed(0) })), h('span', null, t('status.fan.speed', { value: Number(thermal.fan_speed ?? 0).toFixed(0) }))),
             h('div', { className: 'mole-metric-foot' }, h('span', null, t('status.power', { value: Number(thermal.system_power ?? 0).toFixed(1) })), h('span', null, t('status.adapter', { value: Number(thermal.adapter_power ?? 0).toFixed(0) }))),
           ),
           h(
@@ -791,7 +1108,7 @@ window.__ModuleLoader__.load({
           h(
             Card,
             { className: 'mole-card-metric mole-card-device' },
-            h('div', { className: 'mole-metric-head' }, h('span', { className: 'mole-eyebrow' }, h(Icon, { name: 'cpu', size: 14 }), t('status.device')), h('span', { className: 'mole-chip' }, status.uptime ?? '—')),
+            h('div', { className: 'mole-metric-head' }, h('span', { className: 'mole-eyebrow' }, h(Icon, { name: 'cpu', size: 14 }), t('status.device')), h('span', { className: 'mole-chip' }, zhDuration(status.uptime ?? '—'))),
             h('div', { className: 'mole-device-name' }, hardware.model ?? status.host ?? '—'),
             h('div', { className: 'mole-device-lines' }, h('span', null, hardware.cpu_model ?? '—'), h('span', null, hardware.total_ram ?? ''), h('span', null, hardware.os_version ?? status.platform ?? ''), h('span', null, t('status.procs', { value: status.procs ?? '—' }))),
           ),
@@ -836,6 +1153,7 @@ window.__ModuleLoader__.load({
       const [runState, setRunState] = usePersistentState('clean.run', { phase: 'idle', data: null, error: null })
       const [confirming, setConfirming] = useState(false)
       const [showList, setShowList] = useState(false)
+
 
       const scan = useCallback(async () => {
         setPreview({ phase: 'running', data: null, error: null })
@@ -1584,7 +1902,7 @@ window.__ModuleLoader__.load({
                   h(
                     'div',
                     { className: 'mole-tr', key: session.run_id || `${session.command}-${session.started_at}` },
-                    h('span', { className: 'mole-cell-name' }, session.command),
+                    h('span', { className: 'mole-cell-name' }, zhCli(session.command)),
                     h('span', { className: 'mole-cell-muted' }, session.started_at ?? '—'),
                     h('span', null, session.size ?? '—'),
                     h('span', null, String(session.items ?? 0)),
@@ -1803,6 +2121,12 @@ window.__ModuleLoader__.load({
           if (typeof unsubscribe === 'function') unsubscribe()
         }
       }, [ctx])
+      try {
+        const snapshot = ctx.locale.getLocale()
+        if (snapshot && typeof snapshot.active === 'string') activeLocale = snapshot.active
+      } catch {
+        // keep the previous locale
+      }
       return useCallback((key, values) => translate(key, values), [translate, revision])
     }
 
@@ -2215,6 +2539,13 @@ window.__ModuleLoader__.load({
       'history.deletions': '删除明细（{count}）',
       'history.deletions.sub': '展开查看每条被删除或移入废纸篓的路径与状态。',
       'history.footnote': '历史记录来自 ~/Library/Logs/mole/operations.log；可用 MO_NO_OPLOG=1 关闭记录。',
+      'status.load': '负载',
+      'status.swap': '交换',
+      'status.diskio': '读 {read} · 写 {write} MB/s',
+      'status.pressure': '压力',
+      'status.fan.count': '风扇 {value}',
+      'status.battery.temp': '电池 {value}°C',
+      'status.fan.speed': '风扇 {value} rpm',
       'missing.installing': '正在安装…',
       'missing.installDone': 'Mole CLI 安装完成，已重新检测。',
       'missing.terminal': '在终端中安装',
@@ -2412,6 +2743,13 @@ window.__ModuleLoader__.load({
       'history.deletions': 'Deletion detail ({count})',
       'history.deletions.sub': 'Expand to see every removed or trashed path and its status.',
       'history.footnote': 'History comes from ~/Library/Logs/mole/operations.log; set MO_NO_OPLOG=1 to opt out.',
+      'status.load': 'load',
+      'status.swap': 'swap',
+      'status.diskio': 'R {read} · W {write} MB/s',
+      'status.pressure': 'pressure',
+      'status.fan.count': 'fan {value}',
+      'status.battery.temp': 'battery {value}°C',
+      'status.fan.speed': 'fan {value} rpm',
       'missing.installing': 'Installing…',
       'missing.installDone': 'Mole CLI installed — re-checked.',
       'missing.terminal': 'Install in Terminal',
@@ -2485,3 +2823,4 @@ window.__ModuleLoader__.load({
     }
   },
 })
+

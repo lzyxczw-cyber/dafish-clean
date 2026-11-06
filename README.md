@@ -26,7 +26,7 @@ dsh plugin --profile <profile> add github:lzyxczw-cyber/dafish-clean
 **Or install the release tarball:**
 
 ```sh
-dsh plugin --profile <profile> add https://github.com/lzyxczw-cyber/dafish-clean/releases/download/v1.0.0/dafish-clean-1.0.0.tgz
+dsh plugin --profile <profile> add https://github.com/lzyxczw-cyber/dafish-clean/releases/download/v1.0.1/dafish-clean-1.0.1.tgz
 ```
 
 **npm:** the package name is reserved as `dafish-clean`; npm publication is
@@ -77,6 +77,7 @@ illustrations. It does not copy Mole for Mac's window chrome or tab bar.
   analysis, Mole CLI install) starts a background job. A single status line
   shows the current group/item from Mole's own output, counters, and a
   continuously updating elapsed time; a log toggle expands the recent output.
+- Scan and analysis results are localized to Chinese: the CLI only prints English, so the panel maps Mole's own group names, task names, statuses and summaries to Chinese while leaving real file paths, app names and process names untouched.
 - Tab switching keeps the running state and completed results: the panel state
   lives in a persistent store, so leaving a tab or the panel and coming back
   does not reset buttons or lose results.
