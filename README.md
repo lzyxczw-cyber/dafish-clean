@@ -17,23 +17,20 @@ maintenance, cleanup history, and a guided Mole CLI install.
 **dsh-market / Plugins (after listing):** open **Plugins → Plugin Market**,
 search for **Big Fat Fish clean / 大肥鱼 clean**, and click install.
 
-**CLI (npm package):**
-
-```sh
-dsh plugin --profile <profile> add dafish-clean
-```
-
 **From GitHub source (no build scripts):**
 
 ```sh
 dsh plugin --profile <profile> add github:lzyxczw-cyber/dafish-clean
 ```
 
-Or install the release tarball:
+**Or install the release tarball:**
 
 ```sh
 dsh plugin --profile <profile> add https://github.com/lzyxczw-cyber/dafish-clean/releases/download/v1.0.0/dafish-clean-1.0.0.tgz
 ```
+
+**npm:** the package name is reserved as `dafish-clean`; npm publication is
+pending this account's npm login. Until then use one of the GitHub sources above.
 
 After installing, refresh the DSH page (restart the host if it asks to) and open
 **大肥鱼 clean** from the sidebar.
