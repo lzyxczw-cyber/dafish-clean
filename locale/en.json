@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Big Fat Fish clean",
+    "description": "Big Fat Fish clean: an unofficial panel for the Mole CLI, with no affiliation to the Mole project. Driven by the locally installed mole command, it covers system health, cleanup previews with explicit confirmation, disk analysis, app inventory, maintenance and cleanup history. The Mole CLI belongs to tw93/Mole (GPL-3.0); this package bundles none of its code or assets."
+  }
+}

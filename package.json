@@ -1,0 +1,65 @@
+{
+  "name": "dafish-clean",
+  "version": "1.0.0",
+  "description": "Big Fat Fish clean — an unofficial graphical panel for the locally installed Mole CLI (tw93/Mole): live system health, cleanup previews with explicit confirmation, disk analysis, app inventory, maintenance, cleanup history and a guided Mole CLI install. Not affiliated with the Mole project; no Mole code or assets are bundled.",
+  "license": "MIT",
+  "author": "lzyxczw-cyber",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lzyxczw-cyber/dafish-clean.git"
+  },
+  "homepage": "https://github.com/lzyxczw-cyber/dafish-clean#readme",
+  "bugs": {
+    "url": "https://github.com/lzyxczw-cyber/dafish-clean/issues"
+  },
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "plugin",
+    "mole",
+    "cleanup",
+    "macos",
+    "disk-cleanup"
+  ],
+  "type": "module",
+  "exports": {
+    ".": "./index.js",
+    "./client": "./client.js",
+    "./package.json": "./package.json",
+    "./locale/*.json": "./locale/*.json",
+    "./icon": "./icon.png"
+  },
+  "files": [
+    "index.js",
+    "client.js",
+    "cordis.patch.yml",
+    "locale/*.json",
+    "icon.png",
+    "assets/*.png",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=20",
+    "dsh": ">=0.2.1-rc.2"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "immediately": true,
+      "inject": [
+        "@deepseek-ai/dsh-client-locale"
+      ]
+    },
+    "compatibility": {
+      "dshReleases": {
+        "0.2.1-rc.2+": "compatible",
+        "0.2.2-rc.1+": "compatible"
+      }
+    }
+  }
+}

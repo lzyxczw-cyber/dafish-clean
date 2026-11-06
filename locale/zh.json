@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "大肥鱼 clean",
+    "description": "大肥鱼 clean：非官方、与 Mole 项目无隶属关系的 Mole CLI 图形面板，用本机 mole 命令行驱动；提供系统状态、清理预览与二次确认、磁盘分析、应用清单、系统维护与清理历史。Mole CLI 属于 tw93/Mole（GPL-3.0），本插件不包含其代码或素材。"
+  }
+}

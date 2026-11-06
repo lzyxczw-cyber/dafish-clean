@@ -1,0 +1,4 @@
+- insert:
+    - id: dafish-clean
+      name: 'dafish-clean'
+      config: {}
