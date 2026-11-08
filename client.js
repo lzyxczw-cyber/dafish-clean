@@ -6,7 +6,7 @@
  * no bundler. All visible text goes through the Client locale service.
  */
 window.__ModuleLoader__.load({
-  id: '@local/dsh-mole',
+  id: 'dafish-clean',
   factory(require) {
     const React = require('react')
     const h = React.createElement
