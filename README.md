@@ -26,7 +26,7 @@ dsh plugin --profile <profile> add github:lzyxczw-cyber/dafish-clean
 **Or install the release tarball:**
 
 ```sh
-dsh plugin --profile <profile> add https://github.com/lzyxczw-cyber/dafish-clean/releases/download/v1.0.2/dafish-clean-1.0.2.tgz
+dsh plugin --profile <profile> add https://github.com/lzyxczw-cyber/dafish-clean/releases/download/v1.0.3/dafish-clean-1.0.3.tgz
 ```
 
 **npm:**

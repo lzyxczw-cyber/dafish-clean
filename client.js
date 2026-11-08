@@ -2787,38 +2787,39 @@ window.__ModuleLoader__.load({
     }
 
     return {
-      inject: ['slots', 'locale'],
       apply(ctx) {
-        ctx.effect(() => ctx.locale.register(NS, { zh: ZH, en: EN }), 'dsh-mole: dictionaries')
-        ctx.effect(
-          () =>
-            ctx.slots.register(
-              { name: 'main', key: PANEL_ID, locale: NS },
-              (props) => h(MainPanel, { ...props, ctx }),
-            ),
-          'dsh-mole: main panel',
-        )
-        ctx.effect(
-          () =>
-            ctx.slots.register(
-              {
-                name: 'sidebar.panellist',
-                id: PANEL_ID,
-                order: 6,
-                label: () => ctx.locale.bind(NS)('nav.title'),
-                locale: NS,
-              },
-              (owner) => h(SidebarMascot, { size: owner?.size ?? 18 }),
-            ),
-          'dsh-mole: sidebar entry',
-        )
-        ctx.effect(() => {
-          const style = document.createElement('style')
-          style.setAttribute('data-dsh-mole', 'nav')
-          style.textContent = '.mole-nav-mark{display:inline-flex;align-items:center;justify-content:center;color:inherit}.mole-nav-icon{display:block;object-fit:contain;filter:invert(1);opacity:.92}body[data-ds-dark-theme] .mole-nav-icon{filter:none}'
-          document.head.appendChild(style)
-          return () => style.remove()
-        }, 'dsh-mole: nav styles')
+        ctx.inject(['slots', 'locale'], (ctx) => {
+          ctx.effect(() => ctx.locale.register(NS, { zh: ZH, en: EN }), 'dsh-mole: dictionaries')
+          ctx.effect(
+            () =>
+              ctx.slots.register(
+                { name: 'main', key: PANEL_ID, locale: NS },
+                (props) => h(MainPanel, { ...props, ctx }),
+              ),
+            'dsh-mole: main panel',
+          )
+          ctx.effect(
+            () =>
+              ctx.slots.register(
+                {
+                  name: 'sidebar.panellist',
+                  id: PANEL_ID,
+                  order: 6,
+                  label: () => ctx.locale.bind(NS)('nav.title'),
+                  locale: NS,
+                },
+                (owner) => h(SidebarMascot, { size: owner?.size ?? 18 }),
+              ),
+            'dsh-mole: sidebar entry',
+          )
+          ctx.effect(() => {
+            const style = document.createElement('style')
+            style.setAttribute('data-dsh-mole', 'nav')
+            style.textContent = '.mole-nav-mark{display:inline-flex;align-items:center;justify-content:center;color:inherit}.mole-nav-icon{display:block;object-fit:contain;filter:invert(1);opacity:.92}body[data-ds-dark-theme] .mole-nav-icon{filter:none}'
+            document.head.appendChild(style)
+            return () => style.remove()
+          }, 'dsh-mole: nav styles')
+        })
       },
     }
   },
