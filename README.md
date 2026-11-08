@@ -29,8 +29,13 @@ dsh plugin --profile <profile> add github:lzyxczw-cyber/dafish-clean
 dsh plugin --profile <profile> add https://github.com/lzyxczw-cyber/dafish-clean/releases/download/v1.0.2/dafish-clean-1.0.2.tgz
 ```
 
-**npm:** the package name is reserved as `dafish-clean`; npm publication is
-pending this account's npm login. Until then use one of the GitHub sources above.
+**npm:**
+
+```sh
+dsh plugin --profile <profile> add dafish-clean
+```
+
+<https://www.npmjs.com/package/dafish-clean>
 
 After installing, refresh the DSH page (restart the host if it asks to) and open
 **大肥鱼 clean** from the sidebar.
